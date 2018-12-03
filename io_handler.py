@@ -48,4 +48,4 @@ def read(file_path):
     inferences = []#get_inferences(content[nodes_nr:nodes_nr + inferences_nr])
     correct_values = []#get_correct_values(content[nodes_nr + inferences_nr:nodes_nr + 2 * inferences_nr])
 
-    return Graph(size=int(nodes_nr), nodes=nodes, directed=True), inferences, correct_values
+    return Graph(size=int(nodes_nr), nodes=nodes, directed=True), inferences, correct_values, probabilities
