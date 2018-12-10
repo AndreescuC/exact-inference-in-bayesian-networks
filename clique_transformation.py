@@ -63,7 +63,7 @@ def associate_factors(graph, probabilities):
             if set(factor.vars).issubset(node):
                 node_factors.append(factor)
 
-        nodes[node] = Node(edges=edges, factors=factors, unique_factor=None)
+        nodes[node] = Node(edges=edges, factors=node_factors, unique_factor=None)
 
     return Graph(size=graph.size, nodes=nodes, directed=False)
 
@@ -73,3 +73,4 @@ def compute_unique_factors(graph):
     for node_set, node_info in graph.nodes.items():
         unique_factor = factor_operators.multiple_apply(node_info.factors, factor_operators.multiply)
         nodes[node_set] = Node(edges=node_info.edges, factors=node_info.factors, unique_factor=unique_factor)
+    return Graph(size=graph.size, nodes=nodes, directed=False)

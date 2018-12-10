@@ -11,13 +11,7 @@ def get_neighbours(node, nodes):
 
 def bron_kerbosch(set_r, set_p, set_x, nodes, level):
     global maximal_cliques
-    print("Call at level %d: " % level)
-    print(list(set_r))
-    print(list(set_p))
-    print(list(set_x))
     if not set_p and not set_x:
-        print("Clique found")
-        print(set_r)
         maximal_cliques.append(set_r)
 
     for node in set_p:

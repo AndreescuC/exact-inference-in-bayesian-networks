@@ -4,6 +4,7 @@ import clique_transformation as ct
 import tree_transformation as tt
 import bron_kerbosch
 import krushkal
+from TreeNode import TreeNode
 
 
 def showcase(tree):
@@ -12,7 +13,7 @@ def showcase(tree):
 
 def main():
     input_file = "input"
-    graph, inferences, correct_values, probabilities = io.read(input_file)
+    graph, inferences, probabilities = io.read(input_file)
 
     parents_mapping = gt.get_parents_mapping(graph)
     graph = gt.transform_to_undirected(graph)
@@ -24,8 +25,9 @@ def main():
     graph = ct.compute_unique_factors(graph)
     print(graph)
 
-    tree = tt.graph_to_tree(graph)
-    tree = tt.reduce_factors_obs(tree)
+    tree = TreeNode()
+    tree.from_graph(graph)
+    tree = tt.reduce_factors_obs(tree, inferences)
     tree = tt.bottom_up_propagation(tree)
     tree = tt.up_to_bottom_propagation(tree)
     showcase(tree)

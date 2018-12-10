@@ -30,11 +30,28 @@ def parse_nodes(lines):
 
 
 def get_inferences(lines):
-    return lines
+    inferences = []
+    for line in lines:
+        content = [
+            [
+                (entity.split('=')[0], int(entity.split('=')[1])) if '=' in entity else ''
+                for entity in part.split(' ')
+            ]
+            for part in line.split(' | ')
+        ]
+        if len(content) < 2:
+            content = [content[0][:-1], []]
+        inferences.append((content[0], content[1]))
+
+    return inferences
 
 
-def get_correct_values(lines):
-    return lines
+def associate_correct_values(lines, inferences):
+    result = {}
+    for inference, value in map(None, lines, inferences):
+        result[inference] = value
+
+    return result
 
 
 def read(file_path):
@@ -45,7 +62,7 @@ def read(file_path):
 
     nodes_nr, inferences_nr = content[0].split(' ')
     nodes, probabilities = parse_nodes(content[1:int(nodes_nr) + 1])
-    inferences = []#get_inferences(content[nodes_nr:nodes_nr + inferences_nr])
-    correct_values = []#get_correct_values(content[nodes_nr + inferences_nr:nodes_nr + 2 * inferences_nr])
+    inferences = get_inferences(content[int(nodes_nr) + 1: int(nodes_nr) + int(inferences_nr) + 1])
+    inferrences = associate_correct_values(content[nodes_nr + inferences_nr:nodes_nr + 2 * inferences_nr], inferences)
 
-    return Graph(size=int(nodes_nr), nodes=nodes, directed=True), inferences, correct_values, probabilities
+    return Graph(size=int(nodes_nr), nodes=nodes, directed=True), inferences, probabilities

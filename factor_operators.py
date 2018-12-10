@@ -5,6 +5,16 @@ Factor = namedtuple("Factor", ["vars", "values"])
 
 
 # -------------------------
+# -------Normalize---------
+# -------------------------
+def normalize(phi):
+    normalize_factor = max(list(phi.values.values()))
+    values = {k: v / normalize_factor for k, v in phi.values.items()}
+
+    return Factor(vars=phi.vars, values=values)
+
+
+# -------------------------
 # -----Multiplication------
 # -------------------------
 def join_vars(phi1, phi2):
@@ -60,7 +70,6 @@ def compute_value(combination, variables, phi1, phi2):
 
 
 def multiply(phi1, phi2):
-    assert isinstance(phi1, Factor) and isinstance(phi2, Factor)
     new_vars = join_vars(phi1, phi2)
     new_values = generate_empty_values(len(new_vars))
 
