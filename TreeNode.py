@@ -22,6 +22,8 @@ class TreeNode:
         self.parent = parent
         self.children = children
         self.factor = factor
+        self.children_messages = {}
+        self.final_believe = None
 
     def __repr__(self):
         status = "TreeNode" if self.parent else "Root"

@@ -4,6 +4,13 @@ from collections import namedtuple
 Factor = namedtuple("Factor", ["vars", "values"])
 
 
+def normalize_phi(phi):
+    sum_val = sum(list(phi.values.values()))
+    values = {k: v / sum_val for k, v in phi.values.items()}
+
+    return Factor(vars=phi.vars, values=values)
+
+
 # -------------------------
 # -------Normalize---------
 # -------------------------
@@ -62,15 +69,19 @@ def get_valid_value(combination, variables, phi):
         raise ValueError("More than on rows found as compatible")
 
     if len(valid_rows) == 0:
-        print("Uneven Factors due to previous reduction")
+        #print("Uneven Factors due to previous reduction")
         return 0
 
     return phi[1][valid_rows[0]]
 
 
-def compute_value(combination, variables, phi1, phi2):
-    return get_valid_value(combination, variables, phi1) * \
-           get_valid_value(combination, variables, phi2)
+def compute_value(combination, variables, phi1, phi2, operation):
+    if operation:
+        val1 = get_valid_value(combination, variables, phi1)
+        val2 = get_valid_value(combination, variables, phi2)
+        return val1 / val2 if val1 != 0 and val2 != 0 else 0
+
+    return get_valid_value(combination, variables, phi1) * get_valid_value(combination, variables, phi2)
 
 
 def remove_uneven_rows(values):
@@ -83,7 +94,26 @@ def multiply(phi1, phi2):
     unequal_join = False
 
     for combination, value in new_values.items():
-        new_values[combination] = compute_value(combination, new_vars, phi1, phi2)
+        new_values[combination] = compute_value(combination, new_vars, phi1, phi2, 0)
+        if new_values[combination] == 0:
+            unequal_join = True
+
+    if unequal_join:
+        new_values = remove_uneven_rows(new_values)
+
+    return Factor(vars=new_vars, values=new_values)
+
+
+# -------------------------
+# --------Divide-----------
+# -------------------------
+def divide(phi1, phi2):
+    new_vars = join_vars(phi1, phi2)
+    new_values = generate_empty_values(len(new_vars))
+    unequal_join = False
+
+    for combination, value in new_values.items():
+        new_values[combination] = compute_value(combination, new_vars, phi1, phi2, 1)
         if new_values[combination] == 0:
             unequal_join = True
 
