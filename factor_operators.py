@@ -61,6 +61,10 @@ def get_valid_value(combination, variables, phi):
     if len(valid_rows) > 1:
         raise ValueError("More than on rows found as compatible")
 
+    if len(valid_rows) == 0:
+        print("Uneven Factors due to previous reduction")
+        return 0
+
     return phi[1][valid_rows[0]]
 
 
@@ -69,13 +73,22 @@ def compute_value(combination, variables, phi1, phi2):
            get_valid_value(combination, variables, phi2)
 
 
+def remove_uneven_rows(values):
+    return {combination: value for combination, value in values.items() if value != 0}
+
+
 def multiply(phi1, phi2):
-    #TODO: INNER JOIN (2 cu 4 da 2)
     new_vars = join_vars(phi1, phi2)
     new_values = generate_empty_values(len(new_vars))
+    unequal_join = False
 
     for combination, value in new_values.items():
         new_values[combination] = compute_value(combination, new_vars, phi1, phi2)
+        if new_values[combination] == 0:
+            unequal_join = True
+
+    if unequal_join:
+        new_values = remove_uneven_rows(new_values)
 
     return Factor(vars=new_vars, values=new_values)
 
