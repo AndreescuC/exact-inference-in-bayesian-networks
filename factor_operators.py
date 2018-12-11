@@ -70,6 +70,7 @@ def compute_value(combination, variables, phi1, phi2):
 
 
 def multiply(phi1, phi2):
+    #TODO: INNER JOIN (2 cu 4 da 2)
     new_vars = join_vars(phi1, phi2)
     new_values = generate_empty_values(len(new_vars))
 
@@ -149,6 +150,8 @@ def variable_elimination(Phi, Z, verbose=False):
 def reduce_factor(phi, obs):
     reduced_values = phi.values
     for obs_var, obs_val in obs.items():
+        if obs_var not in phi.vars:
+            continue
         value_index = phi.vars.index(obs_var)
         reduced_values = {k: v for k, v in reduced_values.items() if k[value_index] == obs_val}
 

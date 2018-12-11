@@ -1,3 +1,4 @@
+from Inference import Inference
 from collections import namedtuple
 import graph_transformation
 Graph = namedtuple("Graph", ["size", "nodes", "directed"])
@@ -47,11 +48,11 @@ def get_inferences(lines):
 
 
 def associate_correct_values(lines, inferences):
-    result = {}
-    for inference, value in map(None, lines, inferences):
-        result[inference] = value
-
-    return result
+    return [Inference(
+        float(value),
+        {pair[0]:pair[1] for pair in inference[0]},
+        {pair[0]:pair[1] for pair in inference[1]}
+    ) for value, inference in zip(lines, inferences)]
 
 
 def read(file_path):
@@ -60,9 +61,12 @@ def read(file_path):
         content = f.readlines()
     content = [x.rstrip('\n') for x in content]
 
-    nodes_nr, inferences_nr = content[0].split(' ')
+    nodes_nr, inferences_nr = [int(x) for x in content[0].split(' ')]
     nodes, probabilities = parse_nodes(content[1:int(nodes_nr) + 1])
     inferences = get_inferences(content[int(nodes_nr) + 1: int(nodes_nr) + int(inferences_nr) + 1])
-    inferrences = associate_correct_values(content[nodes_nr + inferences_nr:nodes_nr + 2 * inferences_nr], inferences)
+    inferences = associate_correct_values(
+        content[nodes_nr + inferences_nr + 1: nodes_nr + 2 * inferences_nr + 1],
+        inferences
+    )
 
     return Graph(size=int(nodes_nr), nodes=nodes, directed=True), inferences, probabilities

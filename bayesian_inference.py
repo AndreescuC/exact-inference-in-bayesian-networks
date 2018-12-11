@@ -4,6 +4,7 @@ import clique_transformation as ct
 import tree_transformation as tt
 import bron_kerbosch
 import krushkal
+from copy import deepcopy
 from TreeNode import TreeNode
 
 
@@ -27,10 +28,13 @@ def main():
 
     tree = TreeNode()
     tree.from_graph(graph)
-    tree = tt.reduce_factors_obs(tree, inferences)
-    tree = tt.bottom_up_propagation(tree)
-    tree = tt.up_to_bottom_propagation(tree)
-    showcase(tree)
+
+    for inference in inferences:
+        solution_tree = deepcopy(tree)
+        tt.reduce_factors_obs(solution_tree, inference)
+        tt.bottom_up_propagation(solution_tree, None)
+        tt.up_to_bottom_propagation(solution_tree)
+        showcase(solution_tree)
 
 
 if __name__ == '__main__':
